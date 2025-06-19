@@ -26,8 +26,14 @@ namespace JobQueue
 {
   public static class JobManager
   {
+    /// <summary>
+    /// Dictionary of all jobs managed by the JobManager.
+    /// </summary>
     public static readonly IDictionary<string, IJob> Jobs = new ConcurrentDictionary<string, IJob>();
 
+    /// <summary>
+    /// Gets a job by key.
+    /// </summary>
     public static IJob GetJobThread(string key)
     {
       Jobs.TryGetValue(key, out IJob job);
@@ -35,18 +41,27 @@ namespace JobQueue
     }
      
 
+    /// <summary>
+    /// Cancels a job by key.
+    /// </summary>
     public static void Cancel(string key)
     {
       IJob job = GetJobThread(key); 
       job?.Cancel();
     }
 
+    /// <summary>
+    /// Waits for a job to finish by key.
+    /// </summary>
     public static void Join(string key)
     {
       IJob job = GetJobThread(key); 
       job?.Join();
     }
 
+    /// <summary>
+    /// Waits for all jobs to finish.
+    /// </summary>
     public static void JoinAll()
     {
       foreach (var job in Jobs)

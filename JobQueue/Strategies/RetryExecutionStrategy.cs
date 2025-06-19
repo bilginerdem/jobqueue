@@ -25,13 +25,22 @@ namespace JobQueue.Strategies
   public class RetryExecutionStrategy : IExecutionStrategy
   {
     private int _maxRetryCount = 5;
+    /// <summary>
+    /// Indicates if the strategy retries on failure.
+    /// </summary>
     public bool RetriesOnFailure => true;
 
+    /// <summary>
+    /// Sets the maximum retry count.
+    /// </summary>
     public void SetMaxRetryCount(int count)
     {
       _maxRetryCount = count;
     }
 
+    /// <summary>
+    /// Executes the operation with retry logic.
+    /// </summary>
     public void Execute(string name, Action operation)
     {
       Execute(name, () =>
@@ -41,6 +50,9 @@ namespace JobQueue.Strategies
       });
     }
 
+    /// <summary>
+    /// Executes the operation with retry logic and returns a result.
+    /// </summary>
     public TResult Execute<TResult>(string name, Func<TResult> operation)
     {
       var count = 0;

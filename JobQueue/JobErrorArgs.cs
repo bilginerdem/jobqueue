@@ -24,17 +24,26 @@ namespace JobQueue
 {
   public sealed class JobErrorArgs : EventArgs
   {
+    /// <summary>
+    /// Initializes a new instance of JobErrorArgs with an exception.
+    /// </summary>
     public JobErrorArgs(Exception exception)
     {
       Exception = exception;
     }
 
 
+    /// <summary>
+    /// Initializes a new instance of JobErrorArgs with a message.
+    /// </summary>
     public JobErrorArgs(string message)
     {
       Exception = new Exception(message);
     }
 
+    /// <summary>
+    /// Gets the exception associated with the error.
+    /// </summary>
     public Exception Exception { get; }
   }
 }

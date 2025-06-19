@@ -32,6 +32,9 @@ namespace JobQueue
   {
     private const int DefaultIntervalMs = 300;
 
+    /// <summary>
+    /// Event triggered when an error occurs in the job.
+    /// </summary>
     public event EventHandler<JobErrorArgs> Error;
 
     private readonly object _signal = new object();
@@ -52,6 +55,9 @@ namespace JobQueue
 
     #endregion
 
+    /// <summary>
+    /// Initializes a new instance of the Job class with the specified action.
+    /// </summary>
     public Job(JobStart action)
     {
       Guard.NotNull(action, "OnAction");
@@ -101,8 +107,14 @@ namespace JobQueue
       _jobStart((IJobDataContext)data);
     }
 
+    /// <summary>
+    /// Gets or sets the data context for the job.
+    /// </summary>
     public IJobDataContext DataContext { get; set; }
 
+    /// <summary>
+    /// Gets or sets whether the job runs continuously.
+    /// </summary>
     public bool Continously
     {
       get => _continously;
@@ -113,6 +125,9 @@ namespace JobQueue
       }
     }
 
+    /// <summary>
+    /// Gets or sets the type of work for the job.
+    /// </summary>
     public JobWorkType WorkType
     {
       get => _workType;
@@ -126,6 +141,9 @@ namespace JobQueue
       }
     }
 
+    /// <summary>
+    /// Gets or sets the interval for scheduled jobs.
+    /// </summary>
     public TimeSpan Interval
     {
       get => _interval;
@@ -136,14 +154,29 @@ namespace JobQueue
       }
     }
 
+    /// <summary>
+    /// Gets the cancellation token for the job.
+    /// </summary>
     public CancellationToken CancellationToken => _cancellationTokenSource.Token;
 
+    /// <summary>
+    /// Gets the current state of the job.
+    /// </summary>
     public JobState JobState => (JobState)State;
+
+    /// <summary>
+    /// Gets the number of jobs (always 1 for a single job).
+    /// </summary>
     public int Count => 1;
 
-
+    /// <summary>
+    /// Gets or sets the unique identifier for the job.
+    /// </summary>
     public string Key { get; set; }
 
+    /// <summary>
+    /// Starts the job.
+    /// </summary>
     public void Start()
     {
       if (!CheckStart())
@@ -163,11 +196,17 @@ namespace JobQueue
       JobManager.AddJob(Key, this);
     }
 
+    /// <summary>
+    /// Cancels the job.
+    /// </summary>
     public void Cancel()
     {
       _cancellationTokenSource.Cancel();
     }
 
+    /// <summary>
+    /// Waits for the job to finish processing.
+    /// </summary>
     public void Join()
     {
       _nonExpcetionStrategy.Execute("PulseAll", () =>
@@ -183,17 +222,25 @@ namespace JobQueue
       Cancel();
     }
 
+    /// <summary>
+    /// Waits for the job to finish or for a timeout.
+    /// </summary>
     public void Wait(TimeSpan timeSpan)
     {
       Monitor.Wait(_signal, timeSpan);
     }
      
-
+    /// <summary>
+    /// Suspends the job.
+    /// </summary>
     public void Suspend()
     {
       Interlocked.CompareExchange(ref State, JobStateConst.SUSPEND, JobStateConst.RUNNING);
     }
 
+    /// <summary>
+    /// Resumes the job if suspended.
+    /// </summary>
     public void Resume()
     {
       lock (_signal)
@@ -229,6 +276,9 @@ namespace JobQueue
       Error?.Invoke(this, new JobErrorArgs(exception));
     }
 
+    /// <summary>
+    /// Releases resources used by the job.
+    /// </summary>
     public void Dispose()
     { 
       _nonExpcetionStrategy.Execute("JT.Dispose [Join]", Join);

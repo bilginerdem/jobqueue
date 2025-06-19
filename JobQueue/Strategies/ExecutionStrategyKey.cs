@@ -24,6 +24,9 @@ namespace JobQueue.Strategies
 {
   public class ExecutionStrategyKey
   { 
+    /// <summary>
+    /// Initializes a new instance of ExecutionStrategyKey with the specified provider and app name.
+    /// </summary>
     public ExecutionStrategyKey(string provider, string appName)
     {
       Guard.NotEmpty(provider, "providerInvariantName");
@@ -31,10 +34,19 @@ namespace JobQueue.Strategies
       Provider = provider;
       AppName = appName;
     } 
+    /// <summary>
+    /// Gets the provider name.
+    /// </summary>
     public string Provider { get; }
      
+    /// <summary>
+    /// Gets the application name.
+    /// </summary>
     public string AppName { get; }
     
+    /// <summary>
+    /// Determines whether the specified object is equal to the current object.
+    /// </summary>
     public override bool Equals(object obj)
     {
       var otherKey = obj as ExecutionStrategyKey;
@@ -48,6 +60,9 @@ namespace JobQueue.Strategies
                  (AppName != null && AppName.Equals(otherKey.AppName, StringComparison.Ordinal)));
     }
     
+    /// <summary>
+    /// Serves as the default hash function.
+    /// </summary>
     public override int GetHashCode()
     {
       if (AppName != null)

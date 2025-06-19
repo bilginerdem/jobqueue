@@ -33,12 +33,21 @@ namespace JobQueue
   {
     private readonly int _workerSize;
     private readonly Action<T> _queueAction;
+    /// <summary>
+    /// Gets or sets the unique identifier for the worker queue.
+    /// </summary>
     public string Key { get; set; }
+    /// <summary>
+    /// Event triggered when an error occurs in the queue.
+    /// </summary>
     public event EventHandler<JobErrorArgs> Error;
 
     private readonly IList<IJob> _jobs;
     private readonly BlockingCollection<T> _blockingCollection = new BlockingCollection<T>();
 
+    /// <summary>
+    /// Initializes a new instance of the JobWorkerQueue class with the specified key, worker size, and action.
+    /// </summary>
     public JobWorkerQueue(string key, int workerSize, Action<T> queueAction)
     {
       _workerSize = workerSize;
@@ -74,6 +83,9 @@ namespace JobQueue
       }
     }
 
+    /// <summary>
+    /// Adds a job to the worker queue.
+    /// </summary>
     public void Push(T data)
     {
       if (JobState == JobState.Running)
@@ -82,6 +94,9 @@ namespace JobQueue
       }
     }
 
+    /// <summary>
+    /// Adds a job to the worker queue, with an option to force enqueue.
+    /// </summary>
     public void Push(T data, bool force)
     {
       if (force)
@@ -94,6 +109,9 @@ namespace JobQueue
       }
     }
 
+    /// <summary>
+    /// Releases resources used by the worker queue.
+    /// </summary>
     public void Dispose()
     {
       _blockingCollection.CompleteAdding();
@@ -104,8 +122,14 @@ namespace JobQueue
       GC.Collect();
     }
 
+    /// <summary>
+    /// Gets the current state of the worker queue.
+    /// </summary>
     public JobState JobState => _jobs[0].JobState;
 
+    /// <summary>
+    /// Gets the number of jobs in the worker queue.
+    /// </summary>
     public int Count
     {
       get
@@ -114,6 +138,9 @@ namespace JobQueue
       }
     }
 
+    /// <summary>
+    /// Starts processing jobs in the worker queue.
+    /// </summary>
     public void Start()
     {
       foreach (var job in _jobs)
@@ -123,6 +150,9 @@ namespace JobQueue
       }
     }
 
+    /// <summary>
+    /// Cancels the worker queue.
+    /// </summary>
     public void Cancel()
     {
       foreach (var job in _jobs)
@@ -133,6 +163,9 @@ namespace JobQueue
       _blockingCollection.CompleteAdding();
     }
 
+    /// <summary>
+    /// Resumes the worker queue if suspended.
+    /// </summary>
     public void Resume()
     {
       foreach (var job in _jobs)
@@ -141,6 +174,9 @@ namespace JobQueue
       }
     }
 
+    /// <summary>
+    /// Suspends the worker queue.
+    /// </summary>
     public void Suspend()
     {
       foreach (var job in _jobs)
@@ -149,6 +185,9 @@ namespace JobQueue
       }
     }
 
+    /// <summary>
+    /// Waits for the worker queue to finish processing.
+    /// </summary>
     public void Join()
     {
       Cancel();
@@ -158,6 +197,9 @@ namespace JobQueue
       }
     }
 
+    /// <summary>
+    /// Waits for the worker queue to finish or for a timeout.
+    /// </summary>
     public void Wait(TimeSpan timeSpan)
     {
       IList<Task> tasks = new List<Task>(_jobs.Count);
@@ -169,6 +211,9 @@ namespace JobQueue
       Task.WaitAll(tasks.ToArray());
     }
 
+    /// <summary>
+    /// Interrupts the worker queue.
+    /// </summary>
     public void Interrupt()
     {
       foreach (var job in _jobs)

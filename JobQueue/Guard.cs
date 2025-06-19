@@ -24,6 +24,9 @@ namespace JobQueue
 {
   public static class Guard
   {
+    /// <summary>
+    /// Ensures a reference type is not null.
+    /// </summary>
     public static T NotNull<T>(T value, string parameterName) where T : class
     {
       if (value == null)
@@ -34,6 +37,9 @@ namespace JobQueue
       return value;
     }
 
+    /// <summary>
+    /// Ensures a value type is not null.
+    /// </summary>
     public static T? NotNull<T>(T? value, string parameterName) where T : struct
     {
       if (value == null)
@@ -44,6 +50,9 @@ namespace JobQueue
       return value;
     }
 
+    /// <summary>
+    /// Ensures a string is not empty.
+    /// </summary>
     public static string NotEmpty(string value, string parameterName)
     {
       if (string.IsNullOrWhiteSpace(value))
@@ -54,11 +63,17 @@ namespace JobQueue
       return value;
     }
  
+    /// <summary>
+    /// Ensures an argument is not null.
+    /// </summary>
     public static void ArgumentNotNull(object argumentValue, string argumentName)
     {
       if (argumentValue == null) throw new ArgumentNullException(argumentName);
     }
  
+    /// <summary>
+    /// Ensures a string argument is not null or empty.
+    /// </summary>
     public static void ArgumentNotNullOrEmpty(string argumentValue, string argumentName)
     {
       if (argumentValue == null) throw new ArgumentNullException(argumentName);

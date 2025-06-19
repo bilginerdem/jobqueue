@@ -30,8 +30,14 @@ namespace JobQueue
   [DebuggerDisplay(JobDebuggerDisplayKeys.JobQueueThread)]
   public sealed class JobQueue<T> : IJobQueue<T>
   {
+    /// <summary>
+    /// Gets or sets the unique identifier for the job queue.
+    /// </summary>
     public string Key { get; set; }
 
+    /// <summary>
+    /// Event triggered when an error occurs in the queue.
+    /// </summary>
     public event EventHandler<JobErrorArgs> Error;
 
     private readonly Job _job;
@@ -40,6 +46,9 @@ namespace JobQueue
 
     private readonly BlockingCollection<T> _blockingCollection = new BlockingCollection<T>();
 
+    /// <summary>
+    /// Initializes a new instance of the JobQueue class with the specified key and action.
+    /// </summary>
     public JobQueue(string key, Action<T> queueAction)
     {
       _queueAction = queueAction;
@@ -77,6 +86,9 @@ namespace JobQueue
       //}
     }
 
+    /// <summary>
+    /// Adds a job to the queue.
+    /// </summary>
     public void Push(T data)
     {
       if (_job.State == JobStateConst.RUNNING)
@@ -85,6 +97,9 @@ namespace JobQueue
       }
     }
 
+    /// <summary>
+    /// Adds a job to the queue, with an option to force enqueue.
+    /// </summary>
     public void Push(T data, bool force)
     {
       if (force)
@@ -96,6 +111,9 @@ namespace JobQueue
         Push(data);
       }
     }
+    /// <summary>
+    /// Releases resources used by the queue.
+    /// </summary>
     public void Dispose()
     {
       try
@@ -110,8 +128,14 @@ namespace JobQueue
       }
     }
 
+    /// <summary>
+    /// Gets the current state of the job.
+    /// </summary>
     public JobState JobState => _job.JobState;
 
+    /// <summary>
+    /// Gets the number of jobs in the queue.
+    /// </summary>
     public int Count
     {
       get
@@ -120,12 +144,18 @@ namespace JobQueue
       }
     }
 
+    /// <summary>
+    /// Starts processing jobs in the queue.
+    /// </summary>
     public void Start()
     {
       _job.Start();
       JobManager.AddJob(_job.Key, this);
     }
 
+    /// <summary>
+    /// Cancels the job queue.
+    /// </summary>
     public void Cancel()
     {
       _job.Cancel();
@@ -133,28 +163,43 @@ namespace JobQueue
       _blockingCollection.CompleteAdding();
     }
 
+    /// <summary>
+    /// Resumes the job queue if suspended.
+    /// </summary>
     public void Resume()
     {
       _job.Resume();
     }
 
+    /// <summary>
+    /// Suspends the job queue.
+    /// </summary>
     public void Suspend()
     {
       _job.Suspend();
     }
 
+    /// <summary>
+    /// Waits for the queue to finish processing.
+    /// </summary>
     public void Join()
     {
       Cancel();
       _job.Join();
     }
 
+    /// <summary>
+    /// Waits for the queue to finish or for a timeout.
+    /// </summary>
     public void Wait(TimeSpan timeSpan)
     {
       _job.Wait(timeSpan);
       Thread.Yield();
     }
 
+    /// <summary>
+    /// Interrupts the job queue.
+    /// </summary>
     public void Interrupt()
     {
       _job.Join();
@@ -165,6 +210,9 @@ namespace JobQueue
   public sealed class JobQueue : IJobQueue
   {
     private readonly IJobQueue<object> _jobQueue;
+    /// <summary>
+    /// Initializes a new instance of the non-generic JobQueue class.
+    /// </summary>
     public JobQueue(string key, Action<object> queueAction)
     {
       Key = key;
@@ -177,10 +225,22 @@ namespace JobQueue
       Error?.Invoke(sender, e);
     }
 
+    /// <summary>
+    /// Gets or sets the unique identifier for the job queue.
+    /// </summary>
     public string Key { get; set; }
+    /// <summary>
+    /// Event triggered when an error occurs in the queue.
+    /// </summary>
     public event EventHandler<JobErrorArgs> Error;
+    /// <summary>
+    /// Gets the current state of the job.
+    /// </summary>
     public JobState JobState => _jobQueue.JobState;
 
+    /// <summary>
+    /// Gets the number of jobs in the queue.
+    /// </summary>
     public int Count
     {
       get
@@ -189,47 +249,74 @@ namespace JobQueue
       }
     }
 
+    /// <summary>
+    /// Starts processing jobs in the queue.
+    /// </summary>
     public void Start()
     {
       _jobQueue.Start();
     }
 
+    /// <summary>
+    /// Cancels the job queue.
+    /// </summary>
     public void Cancel()
     {
       _jobQueue.Cancel();
     }
 
+    /// <summary>
+    /// Resumes the job queue if suspended.
+    /// </summary>
     public void Resume()
     {
       _jobQueue.Resume();
     }
 
+    /// <summary>
+    /// Suspends the job queue.
+    /// </summary>
     public void Suspend()
     {
       _jobQueue.Suspend();
     }
 
+    /// <summary>
+    /// Waits for the queue to finish processing.
+    /// </summary>
     public void Join()
     {
       _jobQueue.Join();
     }
 
+    /// <summary>
+    /// Waits for the queue to finish or for a timeout.
+    /// </summary>
     public void Wait(TimeSpan timeSpan)
     {
       _jobQueue.Wait(timeSpan);
     }
      
 
+    /// <summary>
+    /// Adds a job to the queue.
+    /// </summary>
     public void Push(object data)
     {
       _jobQueue.Push(data);
     }
 
+    /// <summary>
+    /// Adds a job to the queue, with an option to force enqueue.
+    /// </summary>
     public void Push(object data, bool force)
     {
       _jobQueue.Push(data, force);
     }
 
+    /// <summary>
+    /// Releases resources used by the queue.
+    /// </summary>
     public void Dispose()
     {
       _jobQueue.Dispose();

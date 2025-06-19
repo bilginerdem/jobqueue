@@ -28,12 +28,18 @@ namespace JobQueue
   {
     private readonly IDictionary<string, object> _dataDictionary = new ConcurrentDictionary<string, object>();
 
+    /// <summary>
+    /// Gets data by key from the context.
+    /// </summary>
     public object GetData(string key)
     {
       _dataDictionary.TryGetValue(key, out var value);
       return value;
     }
 
+    /// <summary>
+    /// Sets data by key in the context.
+    /// </summary>
     public void SetData(string key, object value)
     {
       _dataDictionary[key] = value;

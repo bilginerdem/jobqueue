@@ -33,27 +33,42 @@ namespace JobQueue
     private JobWorkType _jobWorkType = JobWorkType.Normal;
     private TimeSpan _interval = TimeSpan.Zero; 
 
+    /// <summary>
+    /// Creates a new instance of JobBuilder.
+    /// </summary>
     public static JobBuilder Create()
     {
       return new JobBuilder();
     }
 
+    /// <summary>
+    /// Creates a new instance of JobBuilder with the specified key.
+    /// </summary>
     public static JobBuilder Create(string key)
     { 
       return Create().WithKey(key); 
     }
 
+    /// <summary>
+    /// Sets the job key.
+    /// </summary>
     public JobBuilder WithKey(string key)
     {
       _key = key;
       return this;
     }
 
+    /// <summary>
+    /// Sets whether the job should run continuously.
+    /// </summary>
     public JobBuilder Continously(bool continously)
     {
       _continously = continously;
       return this;
     }
+    /// <summary>
+    /// Sets the schedule interval for the job.
+    /// </summary>
     public JobBuilder Schedule(TimeSpan interval)
     {
       _jobWorkType = JobWorkType.Schedule;
@@ -62,18 +77,27 @@ namespace JobQueue
       return this;
     }
 
+    /// <summary>
+    /// Sets the job action.
+    /// </summary>
     public JobBuilder OnAction(JobStart jobStart)
     {
       _jobStart = jobStart;
       return this;
     } 
 
+    /// <summary>
+    /// Sets the data context for the job.
+    /// </summary>
     public JobBuilder SetDataContext(IJobDataContext jobDataContext)
     {
       _jobDataContext = jobDataContext;
       return this;
     }
 
+    /// <summary>
+    /// Builds and returns the job.
+    /// </summary>
     public IJobWork Build()
     {
       IJobWork jobWork = new Job(_jobStart);
