@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net5.0;net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>Erdem Bilgin</Authors>
+        <LangVersion>10</LangVersion>
+        <PackAsTool>False</PackAsTool>
+        <Version>1.0.00</Version>
+        <AssemblyVersion>$(VersionPrefix)</AssemblyVersion>
+        <FileVersion>$(VersionPrefix)</FileVersion>
+        <Title>JobQueue</Title>
+        <Description>JobQueue is a lightweight, thread-based sequential task queue designed for .NET applications. It allows you to enqueue jobs that are processed one by one in the exact order they were added. The jobs are executed on a dedicated background thread, and each job is delivered to a registered callback method.</Description>
+        <Copyright>Copyright © 2025 Erdem Bilgin</Copyright>
+        <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>queue jobqueue thread backgroundworker sequential async tasks</PackageTags>
+        <PackageReleaseNotes>Initial release of JobQueue.  
+- Thread-based sequential job execution  
+- Background task processing  
+- Easy callback registration</PackageReleaseNotes>
+    </PropertyGroup>
+
+</Project>
